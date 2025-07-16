@@ -1,4 +1,4 @@
-// #ifdef HITABLELISTH
+#ifndef HITABLELISTH
 #define HITABLELISTH
 
 #include "hitable.h"
@@ -29,4 +29,4 @@ bool HitableList::hit(const Ray& r, float t_min, float t_max, HitRecord& rec) co
     return hit_anything;
 }
 
-// #endif
+#endif

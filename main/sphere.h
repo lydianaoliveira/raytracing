@@ -1,4 +1,4 @@
-// #ifdef SPHEREH
+#ifndef SPHEREH
 #define SPHEREH
 
 #include "hitable.h"
@@ -41,4 +41,4 @@ bool Sphere::hit(const Ray& r, float t_min, float t_max, HitRecord& rec) const {
     return false;
 }
 
-// #endif
+#endif
