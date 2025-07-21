@@ -2,17 +2,20 @@
 #define SPHEREH
 
 #include "hitable.h"
+#include "material.h"
 
 class Sphere : public hitable {
 public:
     Sphere() {}
-    Sphere(vec3 cen, float r) : center(cen), radius(r) {};
+    // Sphere(vec3 cen, float r) : center(cen), radius(r) {};
+    Sphere(vec3 cen, float r, material* m) : center(cen), radius(r), mat_ptr(m) {};
 
     virtual bool hit(const Ray& r, float t_min, float t_max, HitRecord& rec) const;
 
 
     vec3 center;
     float radius;
+    material* mat_ptr;
 };
 
 bool Sphere::hit(const Ray& r, float t_min, float t_max, HitRecord& rec) const {
@@ -28,6 +31,7 @@ bool Sphere::hit(const Ray& r, float t_min, float t_max, HitRecord& rec) const {
             rec.t = temp;
             rec.p = r.point_at_parameter(rec.t);
             rec.normal = (rec.p - center) / radius;
+            rec.mat_ptr = mat_ptr;
             return true;
         }
         temp = (-b + sqrt(discriminant)) / a;
@@ -35,6 +39,7 @@ bool Sphere::hit(const Ray& r, float t_min, float t_max, HitRecord& rec) const {
             rec.t = temp;
             rec.p = r.point_at_parameter(rec.t);
             rec.normal = (rec.p - center) / radius;
+            rec.mat_ptr = mat_ptr;
             return true;
         }
     }

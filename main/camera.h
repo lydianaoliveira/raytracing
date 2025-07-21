@@ -5,13 +5,24 @@
 
 class camera {
 public:
-    camera() {
-        lowerLeftCorner = vec3(-2.0, -1.0, -1.0);
-        horizontal = vec3(4.0, 0.0, 0.0);
-        vertical = vec3(0.0, 2.0, 0.0);
-        origin = vec3(0.0, 0.0, 0.0);
+    camera(vec3 lookfrom, vec3 lookat, vec3 vup, float vfov, float aspect) {
+        vec3 u, v, w;
+        
+        float theta = vfov * M_PI / 180.0; // Convert degrees to radians
+        float halfHeight = tan(theta / 2);
+        float halfWidth = aspect * halfHeight;
+
+        origin = lookfrom;
+        w = unit_vector(lookfrom - lookat);
+        u = unit_vector(cross(vup, w));
+        v = cross(w, u);
+
+        lowerLeftCorner = vec3(-halfWidth, -halfHeight, -1.0);
+        lowerLeftCorner = origin - halfWidth * u - halfHeight * v - w;
+        horizontal = 2 * halfWidth * u;
+        vertical = 2 * halfHeight * v;
     }
-    Ray getRay(float u, float v) {return Ray(origin, lowerLeftCorner + u * horizontal + v * vertical);};
+    Ray getRay(float s, float t) {return Ray(origin, lowerLeftCorner + s * horizontal + t * vertical - origin);};
 
     vec3 origin;
     vec3 lowerLeftCorner;

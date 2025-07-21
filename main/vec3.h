@@ -94,5 +94,16 @@ inline vec3& vec3::operator/=(const float t) {
     return *this;
 }
 
+inline vec3 random_in_unit_sphere() {
+    vec3 p;
+    do {
+        p = 2.0 * vec3((float)rand() / RAND_MAX, (float)rand() / RAND_MAX, (float)rand() / RAND_MAX) - vec3(1,1,1);
+    } while (p.squared_length() >= 1.0);
+    return p;
+}
+
+vec3 reflect(const vec3& v, const vec3& n) {
+    return v - 2 * dot(v, n) * n;
+}
 
 #endif // VEC3H

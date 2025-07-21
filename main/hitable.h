@@ -1,12 +1,14 @@
 #ifndef HITABLEH
 #define HITABLEH
-
 #include "ray.h"
+
+class material;
 
 struct HitRecord {
     float t;
     vec3 p;
     vec3 normal;
+    material *mat_ptr; // Pointer to the material of the hit object
 };
 
 class hitable {
