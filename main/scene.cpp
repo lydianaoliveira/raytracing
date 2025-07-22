@@ -9,6 +9,8 @@
 #include "lambertian.h"
 #include "metal.h"
 #include "vec3.h"
+#include <omp.h>
+#include <chrono>
 
 
 vec3 color(const Ray& r, hitable *world, int depth) {
@@ -33,6 +35,9 @@ vec3 color(const Ray& r, hitable *world, int depth) {
 
 
 int main() {
+
+    auto start = std::chrono::high_resolution_clock::now();
+
     int nx = 700;
     int ny = 400;
     int ns = 100; // Number of samples per pixel
@@ -55,6 +60,7 @@ int main() {
     // camera cam(vec3(0, 0, 0), vec3(0, 0, -1), vec3(0, 1, 0), 90.0, float(nx) / float(ny));
     camera cam(vec3(0, 1, 0), vec3(0, 0, -1), vec3(0, 1, 0), 90.0, float(nx) / float(ny));
 
+    // #pragma omp parallel for schedule(dynamic)
     for (int j = ny - 1; j >= 0; j--) {
         for (int i = 0; i < nx; i++) {
             vec3 col(0, 0, 0);
@@ -72,12 +78,19 @@ int main() {
             int ig = int(255.99 * col[1]);
             int ib = int(255.99 * col[2]);
 
+            // #pragma omp critical
+            // {
             out << ir << " " << ig << " " << ib << "\n";
+            // }
         }
     }
 
     out.close(); // Fecha o arquivo
     std::cout << "Arquivo PPM gerado com sucesso: scene.ppm\n";
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end - start;
+    std::cout << "Tempo de execucao: " << elapsed.count() << " segundos\n";
 
     return 0;
 }
