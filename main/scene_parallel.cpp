@@ -10,6 +10,7 @@
 #include "lambertian.h"
 #include "metal.h"
 #include "vec3.h"
+#include <omp.h>
 #include <chrono>
 
 
@@ -40,9 +41,9 @@ int main() {
 
     int nx = 700;
     int ny = 400;
-    int ns = 500; // Number of samples per pixel
+    int ns = 100; // Number of samples per pixel
 
-    std::ofstream out("scene.ppm"); // Abre o arquivo para escrita
+    std::ofstream out("scene_parallel.ppm"); // Abre o arquivo para escrita
     if (!out) {
         std::cerr << "Erro ao abrir o arquivo para escrita!\n";
         return 1;
@@ -60,30 +61,43 @@ int main() {
     // camera cam(vec3(0, 0, 0), vec3(0, 0, -1), vec3(0, 1, 0), 90.0, float(nx) / float(ny));
     camera cam(vec3(0, 1, 0), vec3(0, 0, -1), vec3(0, 1, 0), 90.0, float(nx) / float(ny));
 
-    for (int j = ny - 1; j >= 0; j--) {
+
+    std::vector<std::vector<vec3>> image(ny, std::vector<vec3>(nx));
+
+    omp_set_num_threads(1);
+    #pragma omp parallel for schedule(dynamic)
+    for (int j = 0; j < ny; j++) {
+        // Gerador de números aleatórios por thread
+        std::mt19937 rng(omp_get_thread_num() + 42); 
+        std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+
         for (int i = 0; i < nx; i++) {
             vec3 col(0, 0, 0);
 
             for (int s = 0; s < ns; s++) {
-                float u = float(i + ((float) rand() / RAND_MAX)) / float(nx);
-                float v = float(j + ((float) rand() / RAND_MAX)) / float(ny);
+                float u = float(i + dist(rng)) / float(nx);
+                float v = float((ny - 1 - j) + dist(rng)) / float(ny); // j invertido para manter topo para baixo
                 Ray r = cam.getRay(u, v);
-                // vec3 p = r.point_at_parameter(2.0);
                 col += color(r, world, 0);
             }
-            col /= float(ns); // Average color for the pixel
-            col = vec3(sqrt(col[0]), sqrt(col[1]), sqrt(col[2])); // Gamma correction
-            int ir = int(255.99 * col[0]);
-            int ig = int(255.99 * col[1]);
-            int ib = int(255.99 * col[2]);
 
+            col /= float(ns);
+            col = vec3(sqrt(col[0]), sqrt(col[1]), sqrt(col[2]));
+            image[j][i] = col;
+        }
+    }
+
+    for (int j = 0; j < ny; j++) {
+        for (int i = 0; i < nx; i++) {
+            int ir = int(255.99 * image[j][i][0]);
+            int ig = int(255.99 * image[j][i][1]);
+            int ib = int(255.99 * image[j][i][2]);
             out << ir << " " << ig << " " << ib << "\n";
         }
     }
-    
 
     out.close(); // Fecha o arquivo
-    std::cout << "Arquivo PPM gerado com sucesso: scene.ppm\n";
+    std::cout << "Arquivo PPM gerado com sucesso: scene_parallel.ppm\n";
 
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = end - start;
