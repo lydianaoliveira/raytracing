@@ -2,14 +2,14 @@
 #include <fstream>
 #include <cstdlib>
 #include <random>
-#include "ray.h"
-#include "sphere.h"
-#include "hitable_list.h"
+#include "dependence/ray.h"
+#include "dependence/sphere.h"
+#include "dependence/hitable_list.h"
 #include "float.h"
-#include "camera.h"
-#include "lambertian.h"
-#include "metal.h"
-#include "vec3.h"
+#include "dependence/camera.h"
+#include "dependence/lambertian.h"
+#include "dependence/metal.h"
+#include "dependence/vec3.h"
 #include <omp.h>
 #include <chrono>
 
@@ -43,7 +43,7 @@ int main() {
     int ny = 400;
     int ns = 100; // Number of samples per pixel
 
-    std::ofstream out("scene_parallel.ppm"); // Abre o arquivo para escrita
+    std::ofstream out("output/scene_parallel.ppm"); // Salva na pasta output
     if (!out) {
         std::cerr << "Erro ao abrir o arquivo para escrita!\n";
         return 1;
@@ -97,7 +97,7 @@ int main() {
     }
 
     out.close(); // Fecha o arquivo
-    std::cout << "Arquivo PPM gerado com sucesso: scene_parallel.ppm\n";
+    std::cout << "Arquivo PPM gerado com sucesso: output/scene_parallel.ppm\n";
 
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = end - start;
