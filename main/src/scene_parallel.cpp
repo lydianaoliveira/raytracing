@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <random>
+#include <vector>
 #include "dependence/ray.h"
 #include "dependence/sphere.h"
 #include "dependence/hitable_list.h"
