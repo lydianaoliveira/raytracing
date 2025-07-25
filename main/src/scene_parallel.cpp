@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <random>
+#include <vector>
 #include "dependence/ray.h"
 #include "dependence/sphere.h"
 #include "dependence/hitable_list.h"
@@ -64,7 +65,7 @@ int main() {
 
     std::vector<std::vector<vec3>> image(ny, std::vector<vec3>(nx));
 
-    omp_set_num_threads(1);
+    // omp_set_num_threads(4);
     #pragma omp parallel for schedule(dynamic)
     for (int j = 0; j < ny; j++) {
         // Gerador de números aleatórios por thread

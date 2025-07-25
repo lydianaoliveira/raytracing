@@ -2,7 +2,6 @@
 #define VEC3H
 
 #include <math.h>
-#include "vec3.h"
 #include <stdlib.h>
 #include <iostream>
 

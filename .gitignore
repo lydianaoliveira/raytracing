@@ -1,0 +1,48 @@
+# Arquivos de saída do ray tracer
+output/
+*.ppm
+*.png
+
+# Executáveis
+*.exe
+*.out
+*.app
+
+# Arquivos de compilação
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dll
+
+# Arquivos temporários do sistema
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# Arquivos do VS Code (opcionais - descomente se não quiser versionar)
+# .vscode/
+
+# Arquivos de backup
+*.bak
+*.backup
+*~
+
+# Logs
+*.log
+
+# Arquivos de debug
+*.pdb
+*.dSYM/
+
+# Diretórios de build
+build/
+bin/
+debug/
+release/
+
+# Arquivos específicos do MinGW/GCC
+*.gch
+*.pch
